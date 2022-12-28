@@ -20,7 +20,7 @@ set -e               # exit on error
 cd "$(dirname "$0")" # connect to root
 
 DOCKER_DIR=dev-support/docker
-DOCKER_FILE="${DOCKER_DIR}/Dockerfile"
+DOCKER_FILE="${DOCKER_DIR}/Dockerfile_ubuntu_jammy"
 
 CPU_ARCH=$(echo "$MACHTYPE" | cut -d- -f1)
 if [[ "$CPU_ARCH" == "aarch64" || "$CPU_ARCH" == "arm64" ]]; then
