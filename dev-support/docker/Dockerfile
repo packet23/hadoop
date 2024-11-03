@@ -29,8 +29,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo APT::Install-Recommends "0"\; > /etc/apt/apt.conf.d/10disableextras
 RUN echo APT::Install-Suggests "0"\; >>  /etc/apt/apt.conf.d/10disableextras
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_TERSE true
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBCONF_TERSE=true
 
 ######
 # Platform package dependency resolver
@@ -45,6 +45,7 @@ RUN chmod a+x pkg-resolver/*.sh pkg-resolver/*.py \
 # hadolint ignore=DL3008,SC2046
 RUN apt-get -q update \
     && apt-get -q install -y --no-install-recommends python3 \
+    && apt-get -q install -y --no-install-recommends python3-venv \
     && apt-get -q install -y --no-install-recommends $(pkg-resolver/resolve.py ubuntu:focal) \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -56,28 +57,30 @@ ENV PYTHONIOENCODING=utf-8
 ######
 # Set env vars required to build Hadoop
 ######
-ENV MAVEN_HOME /usr
+ENV MAVEN_HOME=/usr
 # JAVA_HOME must be set in Maven >= 3.5.0 (MNG-6003)
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 #######
 # Set env vars for SpotBugs 4.2.2
 #######
-ENV SPOTBUGS_HOME /opt/spotbugs
+ENV SPOTBUGS_HOME=/opt/spotbugs
 
 #######
 # Set env vars for Google Protobuf 3.21.12
 #######
-ENV PROTOBUF_HOME /opt/protobuf
-ENV PATH "${PATH}:/opt/protobuf/bin"
+ENV PROTOBUF_HOME=/opt/protobuf
+ENV PATH="${PATH}:/opt/protobuf/bin"
 
 ###
 # Avoid out of memory errors in builds
 ###
-ENV MAVEN_OPTS -Xms256m -Xmx3072m
+ENV MAVEN_OPTS="-Xms256m -Xmx3072m"
 
 # Skip gpg verification when downloading Yetus via yetus-wrapper
-ENV HADOOP_SKIP_YETUS_VERIFICATION true
+ENV HADOOP_SKIP_YETUS_VERIFICATION=true
+
+ENV VIRTUAL_ENV=/venv
 
 ####
 # Install packages
@@ -88,6 +91,8 @@ RUN pkg-resolver/install-boost.sh ubuntu:focal
 RUN pkg-resolver/install-protobuf.sh ubuntu:focal
 RUN pkg-resolver/install-hadolint.sh ubuntu:focal
 RUN pkg-resolver/install-intel-isa-l.sh ubuntu:focal
+
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 ###
 # Everything past this point is either not needed for testing or breaks Yetus.

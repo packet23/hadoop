@@ -19,4 +19,14 @@
 ######
 # Install pylint and python-dateutil
 ######
-pip3 install pylint==2.6.0 python-dateutil==2.8.1
+if [ $# -lt 1 ]; then
+  echo "ERROR: Need at least 1 argument, $# were provided"
+  exit 1
+fi
+
+VIRTUAL_ENV="$1"
+readonly VIRTUAL_ENV
+
+python3 -m venv "$VIRTUAL_ENV"
+. "$VIRTUAL_ENV/bin/activate"
+python3 -m pip install pylint==2.6.0 python-dateutil==2.8.1

@@ -20,7 +20,7 @@ set -e               # exit on error
 cd "$(dirname "$0")" # connect to root
 
 DOCKER_DIR=dev-support/docker
-DOCKER_FILE="${DOCKER_DIR}/Dockerfile"
+DOCKER_FILE="${DOCKER_DIR}/Dockerfile_ubuntu_noble"
 
 CPU_ARCH=$(echo "$MACHTYPE" | cut -d- -f1)
 if [[ "$CPU_ARCH" == "aarch64" || "$CPU_ARCH" == "arm64" ]]; then
@@ -73,9 +73,9 @@ docker build -t "hadoop-build-${USER_ID}" - <<UserSpecificDocker
 FROM hadoop-build
 RUN rm -f /var/log/faillog /var/log/lastlog
 RUN groupadd --non-unique -g ${GROUP_ID} ${USER_NAME}
-RUN useradd -g ${GROUP_ID} -u ${USER_ID} -k /root -m ${USER_NAME} -d "${DOCKER_HOME_DIR}"
+RUN useradd --non-unique -g ${GROUP_ID} -u ${USER_ID} -k /root -m ${USER_NAME} -d "${DOCKER_HOME_DIR}"
 RUN echo "${USER_NAME} ALL=NOPASSWD: ALL" > "/etc/sudoers.d/hadoop-build-${USER_ID}"
-ENV HOME "${DOCKER_HOME_DIR}"
+ENV HOME="${DOCKER_HOME_DIR}"
 
 UserSpecificDocker
 
