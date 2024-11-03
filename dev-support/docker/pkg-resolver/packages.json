@@ -281,7 +281,8 @@
   },
   "libtirpc-devel": {
     "centos:7": "libtirpc-devel",
-    "centos:8": "libtirpc-devel"
+    "centos:8": "libtirpc-devel",
+    "ubuntu:noble": "libtirpc-dev"
   },
   "libpmem": {
     "centos:7": "libpmem-devel"
