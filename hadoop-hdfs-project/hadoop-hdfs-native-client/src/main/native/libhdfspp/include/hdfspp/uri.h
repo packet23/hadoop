@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <cstdint>
 
 namespace hdfs
 {
